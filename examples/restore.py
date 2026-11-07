@@ -17,7 +17,8 @@ from experiments.phadf.model import BASES, DiffusionPhageSeek, confidence_restor
 
 def build_parser():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--checkpoint', type=Path, required=True)
+    parser.add_argument('--checkpoint', required=True,
+                        help='Local checkpoint, release directory, or Hugging Face model ID')
     parser.add_argument('--sequence', required=True, help='Complete ACGT context, without FASTA headers')
     parser.add_argument('--start', type=int, required=True, help='Zero-based target start')
     parser.add_argument('--end', type=int, required=True, help='Exclusive target end')

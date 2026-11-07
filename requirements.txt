@@ -1,2 +1,4 @@
 torch==2.12.1
 biopython==1.87
+huggingface_hub==1.20.1
+safetensors==0.8.0

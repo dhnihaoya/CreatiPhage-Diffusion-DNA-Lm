@@ -10,6 +10,7 @@ import torch
 from torch.nn import functional as F
 from torch.nn.attention.flex_attention import flex_attention, _create_sparse_block_from_block_mask
 
+from experiments.phageseek.checkpoint import load_checkpoint
 from experiments.phageseek.config import ModelConfig
 from experiments.phageseek.model import PhageSeek
 from experiments.phageseek.modules import CausalSelfAttention, EngramMemory, apply_rope
@@ -100,7 +101,7 @@ class DiffusionPhageSeek(PhageSeek):
 
     @classmethod
     def from_checkpoint(cls, path):
-        state = torch.load(path, map_location='cpu', weights_only=False)
+        state = load_checkpoint(path)
         config = ModelConfig.from_dict(state['model_config'])
         model = cls(config)
         load_pretrained(model, state['model_state'])

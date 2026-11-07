@@ -10,7 +10,7 @@ Code for **CPDD: Adapting an autoregressive DNA language model for bidirectional
 
 CPDD is a 147.5M-parameter bidirectional discrete diffusion model initialized from the 144.5M-parameter CreatiPhage autoregressive backbone. It restores fixed-length regions within a preserved DNA scaffold. The released model configuration corresponds to the final 46,000-update training run.
 
-[Technical report](paper/CPDD_technical_report.pdf) — pre-release manuscript snapshot.
+[AR weights](https://huggingface.co/dinghhhhhhhhhhhhhhh/CreatiPhage-145M) · [CPDD weights](https://huggingface.co/dinghhhhhhhhhhhhhhh/CPDD-147M) · [Technical report](paper/CPDD_technical_report.pdf)
 
 ## Repository map
 
@@ -36,7 +36,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Run commands from the repository root. Model checkpoints and datasets are not stored in this GitHub repository.
+Run commands from the repository root. Model weights are hosted on Hugging Face; datasets are not redistributed. The examples accept a Hugging Face model ID, a directory containing `model.safetensors` and `config.json`, or a local checkpoint.
 
 ## AR generation demo
 
@@ -44,7 +44,7 @@ Generate a short sequence from a primer using the released cached AR decoder. `-
 
 ```bash
 python examples/generate_ar.py \
-  --checkpoint /path/to/creatiphage_145m.pt \
+  --checkpoint dinghhhhhhhhhhhhhhh/CreatiPhage-145M \
   --primer ATGCGT --length 16 --device cpu
 ```
 
@@ -56,7 +56,7 @@ The following masks bases 9–27 of a synthetic 36 bp context and restores them 
 
 ```bash
 python examples/restore.py \
-  --checkpoint /path/to/step_46000.pt \
+  --checkpoint dinghhhhhhhhhhhhhhh/CPDD-147M \
   --sequence ATGCGTACGTTAGGCTAACCGATCGTACCTGATAGC \
   --start 9 --end 27 --steps 6 \
   --decoding argmax --device cpu
@@ -95,7 +95,7 @@ Run iterative whole-CDS and gap-restoration validation on a locally prepared pan
 
 ```bash
 python -m experiments.phadf.generation_eval \
-  --checkpoint /path/to/step_46000.pt \
+  --checkpoint dinghhhhhhhhhhhhhhh/CPDD-147M \
   --repo-root "$PWD" \
   --dataset-dir data/cpdd_dataset \
   --val-panel data/cpdd_dataset/panels/pilot_val.jsonl \

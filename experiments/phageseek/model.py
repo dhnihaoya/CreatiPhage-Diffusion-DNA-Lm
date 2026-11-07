@@ -8,6 +8,7 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
+from .checkpoint import load_checkpoint
 from .config import ModelConfig, get_model_config
 from .modules import LayerDecodeCache, RMSNorm, TransformerStack
 
@@ -86,6 +87,13 @@ class PhageSeek(nn.Module):
 
     def reset_parameters(self) -> None:
         nn.init.normal_(self.token_emb.weight, mean=0.0, std=0.02)
+
+    @classmethod
+    def from_checkpoint(cls, path):
+        state = load_checkpoint(path)
+        model = cls(ModelConfig.from_dict(state['model_config']))
+        model.load_state_dict(state['model_state'], strict=True)
+        return model, state
 
     def set_gradient_checkpointing(self, enabled: bool, free: int = 0) -> None:
         self.stack.set_gradient_checkpointing(enabled, free)

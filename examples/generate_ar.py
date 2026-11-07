@@ -12,13 +12,13 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from experiments.phageseek.config import ModelConfig
 from experiments.phageseek.model import PhageSeek
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--checkpoint', type=Path, required=True)
+    parser.add_argument('--checkpoint', required=True,
+                        help='Local checkpoint, release directory, or Hugging Face model ID')
     parser.add_argument('--primer', default='ATGCGT', help='ACGT primer; BOS is added automatically')
     parser.add_argument('--length', type=int, default=16, help='Total token length, including BOS and primer')
     parser.add_argument('--temperature', type=float, default=0.95)
@@ -35,9 +35,7 @@ def main(argv=None):
     if args.device == 'cuda' and not torch.cuda.is_available():
         raise RuntimeError('CUDA was requested but is unavailable')
 
-    state = torch.load(args.checkpoint, map_location='cpu', weights_only=False)
-    model = PhageSeek(ModelConfig.from_dict(state['model_config']))
-    model.load_state_dict(state['model_state'], strict=True)
+    model, state = PhageSeek.from_checkpoint(args.checkpoint)
     device = torch.device(args.device)
     model.to(device).eval()
     lookup = {'A': 1, 'T': 2, 'C': 3, 'G': 4}
